@@ -10,12 +10,12 @@ const UI = {
     switchLanguage: '한국어',
     save: 'JSON保存', load: 'JSON読込', reset: '最初から',
     currentLocation: '現地', unvisited: '未訪問', visited: '訪問済み', inspected: '調査済み',
-    investigation: '調査', progress: '進行状況', locationProgress: '場所の調査', itemProgress: 'アイテムの調査',
+    investigation: '調査', progress: '進行状況', locationProgress: '第1段階の場所調査', phase2Progress: '第2段階の場所調査', itemProgress: 'アイテムの調査', overallProgress: '総合調査率',
     seedStatus: '銀色の種子', unknown: '未確認', carried: '所持中',
     progressStart: '村と周辺に残された痕跡を調査してください。',
     progressEnded: '調査は終了しました。',
-    progressReady: 'すべての場所とアイテムの調査が完了しました。崖で最後の照合ができます。',
-    progressContinue: '村と周辺の場所、入手したアイテムを調査してください。',
+    progressReady: '調査率100%。地図には「???」だけが残っています。',
+    progressContinue: '村と周辺の場所、入手したアイテムを調査してください。', phase2UnlockedNote: '初期報告を読み終えました。対象の場所を再訪して第2段階を調査してください。',
     pocket: '所持品', items: 'ITEMS', noItems: '所持品はありません。',
     fieldNote: '現地記録', lastEntry: '最新の記録', noEntry: 'まだ記録はありません。',
     saveFile: 'SAVE FILE', saveNote: '進行状況はブラウザに自動保存されません。JSONファイルに保存し、次回プレイ時に読み込んでください。',
@@ -29,22 +29,25 @@ const UI = {
     mapPanel: 'SITE MAP / 調査区域', mapHeading: '調査区域',
     mapDescription: '調査区域の全体図です。現在地と道でつながっている場所へ移動できます。',
     currentRoute: '現在地から移動', currentPrefix: '現在地：', noMoves: '移動できる場所はありません。',
+    unknownLocation: '行き先不明', endingMapOnly: '移動先は「???」だけになっている。',
     inventoryPanel: 'INVENTORY / 所持品', inventoryHeading: '所持品',
     inventoryDescription: '入手した物を選んで個別に調査できます。調査前後で記録が変化することがあります。',
     noCollectedItems: 'まだ何も入手していません。', itemInspect: 'アイテムを調べる', itemDone: '調査済み', itemNotDone: '未調査',
     journalPanel: 'FIELD JOURNAL / 調査記録', journalHeading: '調査記録',
     journalDescription: '場所やアイテムで確認した内容が、時系列で記録されます。', noJournal: 'まだ記録はありません。',
     researchPanel: 'BIOLOGICAL NOTES / 生態調査', researchHeading: '生態調査記録',
-    researchDescription: '調査した場所とアイテムの進行率に応じて、整理された研究記録が開示されます。記録本文は調査の進行に合わせて追加されます。',
-    researchLocationRate: '場所の調査率', researchItemRate: 'アイテムの調査率',
-    researchLocked: '未解禁', researchUnlocked: '閲覧可能', researchPending: 'この記録の本文はまだ記入されていません。', researchLockedHint: '調査条件を満たすと、この記録が開示される。',
+    researchDescription: '第1段階の調査で初期報告を解禁・閲覧すると、第2段階の場所調査が始まります。最後の記録は、どちらかの結末を見た後にだけ公開されます。',
+    researchLocationRate: '第1段階の場所調査', researchPhase2Rate: '第2段階の場所調査', researchItemRate: 'アイテムの調査', researchTotalRate: '総合調査率',
+    researchRandomCondition: '調査率に応じて公開', researchFirstPhaseCondition: '第1段階の調査率に応じて公開', researchTotalCondition: '総合調査率に応じて公開', researchAfterEnding: 'いずれかの結末を確認した後に公開',
+    researchLocked: '未解禁', researchUnlocked: '閲覧可能', researchRead: '閲覧済み', researchOpenButton: '記録を読む', researchNeedRead: 'この記録を読んだ後、第2段階の調査が解禁される。', researchPending: 'この記録の本文はまだ記入されていません。', researchLockedHint: '調査条件を満たすと、この記録が開示される。',
     researchCondition: '開示条件', researchNeedLocations: '場所の調査', researchNeedItems: 'アイテムの調査',
     labelAfter: '調査後の所見', labelObservation: '観察記録', labelEvidence: '発見した記録',
     labelCompare: '照合可能', labelUnknown: '未確認',
     seedCompareReady: '所持している銀色の種子と、この遺骸の関係を確認できそうだ。',
     seedCompareLocked: 'この遺骸と銀色の種子の関係は、まだ確認できない。',
-    inspectDone: '調査済み', inspectHintDone: '現地記録に内容が追加されています。',
-    inspectButton: '調査する', inspectHint: '周囲を調査できます。',
+    inspectDone: '第1段階の調査済み', inspectHintDone: '現地記録に内容が追加されています。',
+    inspectButton: '第1段階を調査する', inspectHint: '周囲を調査できます。',
+    phase2Label: '第2段階の調査', phase2InspectButton: '第2段階を調査する', phase2Done: '第2段階の調査済み', phase1Done: '第1段階の調査済み', phase2Ready: '第2段階の調査可能', phase2NeedsVisit: '再訪が必要', phase2Revisit: '別の場所へ移動してから、この場所をもう一度訪れてください。', phase2NotUnlocked: '初期報告を2つ読んだ後、再訪すると調査できます。',
     inspectCliff: '遺骸を調査する', inspectCliffHint: '遺骸の形状を記録します。最後の照合には追加調査が必要です。',
     compareButton: '遺骸と種子を照合する', compareHint: '所持している銀色の種子と遺骸を照合できます。',
     inspectCliffLockedHint: '遺骸と種子の関係を確認するには、ほかの場所とアイテムを調査してください。',
@@ -57,8 +60,19 @@ const UI = {
     endingFour: '何かが成長し始める。', endingMark: 'THE END · LEY LINE OF ANGEL',
     toastLocation: '周囲を調査して記録しました。', toastWell: '井戸の中から誰かの骨を入手しました。',
     toastItem: 'の詳細を記録しました。', toastJournal: '調査内容を記録しました。',
-    toastEnding: '現地記録が終了しました。', toastAlready: 'すでに調査した場所です。',
-    toastNotReady: '遺骸と種子の関係は、まだ確認できません。',
+    toastAlready: 'すでに調査した場所です。',
+    toastPhase2Inspected: '第2段階の調査内容を記録しました。',
+    toastPhase2NeedRevisit: '別の場所へ移動してから、この場所をもう一度訪れてください。',
+    toastPhase2NotUnlocked: '初期報告を2つ読んだ後、再訪すると調査できます。',
+    loadedFile: '読み込んだファイル：',
+    introSummary: '短編の調査型テキストアドベンチャーです。\n想定プレイ時間は10〜15分ほどです。',
+    introWarningLabel: '内容に関する注意',
+    introWarning: 'ホラー作品です。ゴア、寄生、子どもに関わる残酷な描写が含まれますので、ご注意のうえプレイしてください。',
+    introStart: 'はじめる', introLoad: '保存データから再開',
+    creditPlanLabel: '企画・テキスト', creditTranslationLabel: '翻訳', creditTranslation: '機械翻訳およびAI翻訳',
+    creditCodingLabel: 'コーディング',
+    toastEndingReady: '調査率が100%に達しました。地図を確認してください。', toastPhase2Unlocked: '第2段階の場所調査が解禁されました。対象の場所を再訪してください。',
+    endingInspectButton: '調査する', endingChoiceRemove: '取り除く', endingChoiceAccept: '取り除かない',
     toastFileMissing: 'ファイルが選択されていません。',
     footer: '進行状況はJSONファイルに保存・読み込みできます。',
     recordNo: 'RECORD No. 001', eyebrow: 'ARCHAEOLOGICAL FIELD NOTES · UNKNOWN SETTLEMENT',
@@ -72,12 +86,12 @@ const UI = {
     switchLanguage: '日本語',
     save: 'JSON 저장', load: 'JSON 불러오기', reset: '처음부터',
     currentLocation: '현재 장소', unvisited: '미방문', visited: '방문함', inspected: '조사 완료',
-    investigation: '조사', progress: '진행도', locationProgress: '장소 조사', itemProgress: '아이템 조사',
+    investigation: '조사', progress: '진행도', locationProgress: '1차 장소 조사', phase2Progress: '2차 장소 조사', itemProgress: '아이템 조사', overallProgress: '종합 조사율',
     seedStatus: '은색 씨앗', unknown: '미확인', carried: '소지 중',
     progressStart: '마을과 주변에 남겨진 흔적을 조사하세요.',
     progressEnded: '조사가 종료되었어요.',
-    progressReady: '모든 장소와 아이템 조사가 끝났어요. 절벽에서 마지막 대조를 할 수 있어요.',
-    progressContinue: '마을과 주변 장소, 획득한 아이템을 차례로 조사하세요.',
+    progressReady: '조사율 100%예요. 지도에는 이제 ‘???’만 남아 있어요.',
+    progressContinue: '마을과 주변 장소, 획득한 아이템을 차례로 조사하세요.', phase2UnlockedNote: '초기 보고서를 모두 읽었어요. 대상 장소를 다시 방문해 2차 조사를 진행하세요.',
     pocket: '소지품', items: 'ITEMS', noItems: '소지품이 없습니다.',
     fieldNote: '현장 기록', lastEntry: '최근 기록', noEntry: '아직 기록된 내용이 없습니다.',
     saveFile: 'SAVE FILE', saveNote: '진행 기록은 브라우저에 자동 보관되지 않아요. JSON 파일로 저장하고 다음 실행 때 불러오세요.',
@@ -91,22 +105,25 @@ const UI = {
     mapPanel: 'SITE MAP / 조사 구역', mapHeading: '조사 구역',
     mapDescription: '전체 조사 구역을 확인할 수 있어요. 현재 위치와 연결된 장소로 이동할 수 있어요.',
     currentRoute: '현재 위치에서 이동', currentPrefix: '현재 위치: ', noMoves: '이동할 수 있는 장소가 없어요.',
+    unknownLocation: '목적지 불명', endingMapOnly: '이동할 수 있는 곳은 이제 ‘???’뿐이에요.',
     inventoryPanel: 'INVENTORY / 소지품', inventoryHeading: '소지품',
     inventoryDescription: '획득한 물건을 선택해 개별적으로 조사할 수 있어요. 조사 전후의 기록이 달라질 수 있어요.',
     noCollectedItems: '아직 획득한 물건이 없어요.', itemInspect: '아이템을 조사한다', itemDone: '조사 완료', itemNotDone: '미조사',
     journalPanel: 'FIELD JOURNAL / 조사 기록', journalHeading: '조사 기록',
     journalDescription: '장소와 소지품에서 확인한 내용이 시간순으로 기록돼요.', noJournal: '아직 기록된 내용이 없어요.',
     researchPanel: 'BIOLOGICAL NOTES / 생태 조사', researchHeading: '생태 조사 기록',
-    researchDescription: '조사한 장소와 아이템의 진행률에 따라 정리된 연구 기록이 열려요. 기록 본문은 조사 진행에 맞춰 추가할 수 있어요.',
-    researchLocationRate: '장소 조사율', researchItemRate: '아이템 조사율',
-    researchLocked: '잠김', researchUnlocked: '열람 가능', researchPending: '이 기록의 본문은 아직 작성되지 않았어요.', researchLockedHint: '조사 조건을 충족하면 이 기록이 공개돼요.',
+    researchDescription: '1차 조사에서 초기 보고서를 해금하고 읽으면 2차 장소 조사가 시작돼요. 마지막 기록은 어느 쪽이든 결말을 본 뒤에만 공개돼요.',
+    researchLocationRate: '1차 장소 조사', researchPhase2Rate: '2차 장소 조사', researchItemRate: '아이템 조사', researchTotalRate: '종합 조사율',
+    researchRandomCondition: '조사율에 따라 공개', researchFirstPhaseCondition: '1차 조사율에 따라 공개', researchTotalCondition: '종합 조사율에 따라 공개', researchAfterEnding: '어느 쪽이든 결말을 확인한 뒤 공개',
+    researchLocked: '잠김', researchUnlocked: '열람 가능', researchRead: '열람 완료', researchOpenButton: '기록 열람', researchNeedRead: '이 기록을 읽으면 2차 조사가 해금돼요.', researchPending: '이 기록의 본문은 아직 작성되지 않았어요.', researchLockedHint: '조사 조건을 충족하면 이 기록이 공개돼요.',
     researchCondition: '해금 조건', researchNeedLocations: '장소 조사', researchNeedItems: '아이템 조사',
     labelAfter: '조사 후 관찰', labelObservation: '관찰 기록', labelEvidence: '발견 기록',
     labelCompare: '대조 가능', labelUnknown: '미확인',
     seedCompareReady: '가지고 있는 은색 씨앗과 이 유해의 관계를 확인할 수 있을 것 같아요.',
     seedCompareLocked: '아직 이 유해와 은색 씨앗의 관계를 확인할 수 없어요.',
-    inspectDone: '조사 완료', inspectHintDone: '현장 기록에 내용이 추가되어 있어요.',
-    inspectButton: '조사한다', inspectHint: '주변을 조사할 수 있어요.',
+    inspectDone: '1차 조사 완료', inspectHintDone: '현장 기록에 내용이 추가되어 있어요.',
+    inspectButton: '1차 조사', inspectHint: '주변을 조사할 수 있어요.',
+    phase2Label: '2차 조사', phase2InspectButton: '2차 조사', phase2Done: '2차 조사 완료', phase1Done: '1차 조사 완료', phase2Ready: '2차 조사 가능', phase2NeedsVisit: '재방문 필요', phase2Revisit: '다른 장소로 이동한 뒤 이곳을 다시 방문해야 해요.', phase2NotUnlocked: '초기 보고서 두 편을 읽은 뒤 다시 방문하면 조사할 수 있어요.',
     inspectCliff: '유해를 조사한다', inspectCliffHint: '유해의 형태를 기록해요. 마지막 대조에는 추가 조사가 필요해요.',
     compareButton: '유해와 씨앗을 대조한다', compareHint: '가지고 있는 은색 씨앗과 유해를 대조할 수 있어요.',
     inspectCliffLockedHint: '유해와 씨앗의 관계를 확인하려면 다른 장소와 아이템을 더 조사해야 해요.',
@@ -119,8 +136,19 @@ const UI = {
     endingFour: '무언가가 자라기 시작해요.', endingMark: 'THE END · LEY LINE OF ANGEL',
     toastLocation: '주변을 조사하고 기록했어요.', toastWell: '우물 안에서 누군가의 뼈를 획득했어요.',
     toastItem: '의 세부 사항을 기록했어요.', toastJournal: '조사 내용을 기록했어요.',
-    toastEnding: '현장 기록이 종료되었어요.', toastAlready: '이미 조사한 장소예요.',
-    toastNotReady: '유해와 씨앗의 관계를 아직 확인할 수 없어요.',
+    toastAlready: '이미 조사한 장소예요.',
+    toastPhase2Inspected: '2차 조사 내용을 기록했어요.',
+    toastPhase2NeedRevisit: '다른 장소로 이동한 뒤 이곳을 다시 방문해야 해요.',
+    toastPhase2NotUnlocked: '초기 보고서 두 편을 읽은 뒤 다시 방문하면 조사할 수 있어요.',
+    loadedFile: '불러온 파일: ',
+    introSummary: '단편 조사형 텍스트 어드벤처입니다.\n예상 플레이 시간은 10~15분 정도입니다.',
+    introWarningLabel: '내용 주의',
+    introWarning: '호러 게임이며 고어, 기생, 아동 관련 잔혹한 요소가 포함되어 있으니 플레이 시 주의 바랍니다.',
+    introStart: '시작하기', introLoad: '저장 파일로 이어하기',
+    creditPlanLabel: '텍스트 & 기획', creditTranslationLabel: '번역', creditTranslation: '기계 번역 및 AI 번역',
+    creditCodingLabel: '코딩',
+    toastEndingReady: '조사율 100%를 달성했어요. 지도를 확인해 주세요.', toastPhase2Unlocked: '2차 장소 조사가 해금됐어요. 대상 장소를 다시 방문하세요.',
+    endingInspectButton: '조사한다', endingChoiceRemove: '떼어낸다', endingChoiceAccept: '떼어내지 않는다',
     toastFileMissing: '선택된 파일이 없어요.',
     footer: '진행 기록은 JSON 파일로 저장하고 불러올 수 있어요.',
     recordNo: 'RECORD No. 001', eyebrow: 'ARCHAEOLOGICAL FIELD NOTES · UNKNOWN SETTLEMENT',
@@ -138,13 +166,14 @@ const JA_LOCATIONS = {
   dwelling: { name: '民家', category: '居住区', group: '村の中心部', description: '人が暮らしていた痕跡の残る家だ。\n部屋の隅に紙の束が置かれている。', inspectText: '誰かの日記と思われる記録だ。\n\n「XXXXを連れて行くなんて、神もなんと無情なことを...\n何を間違えたのだろう...」', evidence: ['日記から、誰かが連れ去られた事件と、それによる喪失を読み取れる。'] },
   grandHouse: { name: '豪奢な邸宅', category: '比較的裕福だった家屋', group: '村の中心部', description: '顔料の跡や、朽ちた織物が比較的多く残されている場所だ。', inspectText: '古銭が山のように積まれた中に、何かが書き残されている。', evidence: ['「今年の天使はまだ現れていない。」', '「種を蒔かなければならない。」', '「ほかの場所に奪われるわけにはいかない...」', '何を奪われたくないのだろう。分からない。'] },
   temple: { name: '神殿', category: '宗教施設', group: '村の中心部', description: '六枚の翼を持つ生物の絵が、石壁のあちこちに並んでいる。\n人間の顔のような中央部は、それぞれ異なる姿をしている。', inspectText: '生物の下には、次のような文字が刻まれている。', evidence: ['「○○○の長子であった者、昇天す」', '「△△△の末子であった者、昇天す」', '誰かが昇天したという記録が延々と続いている。どこかに空白があるようだ。'] },
-  templeUnderground: { name: '神殿地下', category: '神殿の地下空間', group: '村の中心部', description: '神殿の下へと続く地下空間だ。\n奇妙な形をした遺骨が、広い空間に大量に並べられている。', inspectText: '頭蓋骨と脊椎だけが残された遺骨が大量に置かれている。手足や胴体にあたる骨は見当たらない。', evidence: ['頭蓋骨と脊椎だけが残された、多数の遺骨を確認した。'] },
-  orchard: { name: '果樹園', category: '村外れの農地', group: '農地と井戸', description: '果樹園と思われる土地だ。石造りの柵があり、\n豊作を祈る祭祀が行われたのか、祭具があちこちに散らばっている。', inspectText: '奇妙な紋様が、朽ちた旗のあちこちに残されている...', conditionalText: '銀色の種子に刻まれたものとまったく同じ紋様が、朽ちた旗のあちこちに残されている。何か関係があるのだろうか...?', evidence: ['朽ちた旗のあちこちに、奇妙な紋様が残されている。'] },
-  well: { name: '井戸端', category: '村外れの井戸', group: '農地と井戸', description: '干上がった井戸がある。\n周囲には雑草が生い茂っている。', inspectText: '井戸の中には骨が詰まっている。どれも頭蓋骨と脊椎が抜き取られている。\nこれはすべて... 腕や脚の骨だろうか？', evidence: ['誰かの骨を入手した。'] },
-  graveyard: { name: '墓地', category: '村から離れた静かな場所', group: '人里離れた場所', description: '一部の墓が掘り返されたのか、墓所のあちこちが空になっているようだ。\n掘り返された墓の墓碑には、どれも刻印と思われるものが刻まれている。', inspectText: '彼らには、遺骨に触れると祟られるという考えがなかったのだろうか。それとも、あったのだろうか？\n遺骨からは頭蓋骨と脊椎、腕や脚の骨が失われている。', evidence: ['掘り返された墓と、墓碑に刻まれた刻印を確認した。', '墓の遺骨から頭蓋骨、脊椎、腕や脚の骨が失われている。'] },
-  ashSite: { name: '灰の積もる場所', category: '墓地の近く', group: '人里離れた場所', description: '墓地の近くに灰が積もった場所がある。\n古代の人々は、なぜここで何かを焼いたのだろう...\n一種の火葬場だったのかもしれない。', inspectText: '主に骨が焼かれたようで、白い灰が積もっている。', conditionalText: '積み重なった骨と、ここに転がっている骨に刻まれた印が一致している...', evidence: ['骨が焼かれたと思われる白い灰が積もっている。'] },
+  templeUnderground: { name: '神殿地下', category: '神殿の地下空間', group: '村の中心部', description: '暗いにもかかわらず、なぜか暖かさを感じる空間だ。\n頭蓋骨と脊椎骨が並び、それぞれには神殿で見た名前とは異なる名札が刻まれている。', inspectText: '大半の脊椎骨には、十分に成長を終えられなかったかのような大小の歪みが見つかる。反対に頭蓋骨は成人のものを思わせるほど大きい。これは何を意味するのだろうか...', phase2: { beforeText: '異様な頭蓋骨と脊椎骨が並ぶ空間だ。名札に記された名前も、いったい誰を指しているのか正確には分からない。', inspectText: '古い遺骨では、特徴的な「ひどく大きく肥大した」頭蓋骨と、それに反比例する子どもの華奢な脊椎、しかも成長が止まった遺骨が主に観察される一方、\n新しく埋葬された遺骨ほど、一般的な子どもの頭蓋骨と脊椎だけが観察される...' }, evidence: [] },
+  orchard: { name: '果樹園', category: '村外れの農地', group: '農地と井戸', description: '果樹園と思われる土地だ。石造りの柵があり、\n豊作を祈る祭祀が行われたのか、祭具があちこちに散らばっている。', inspectText: '奇妙な紋様が、朽ちた旗のあちこちに残されている...', conditionalText: '銀色の種子に刻まれたものとまったく同じ紋様が、朽ちた旗のあちこちに残されている。何か関係があるのだろうか...?', phase2: { beforeText: '旗にびっしりと描かれたさまざまな紋様は、この土地で育った種子を表しているのだろうか？', inspectText: '祭りの回数が記録された小さな粘土板を見つけた。\n粘土板の末尾に近づくほどひどく損傷しているのか、それとも祭りをうんざりするほど何度も行ったのか...\nどちらなのか判断するのは難しい。' }, evidence: ['朽ちた旗のあちこちに、奇妙な紋様が残されている。'] },
+  well: { name: '井戸端', category: '村外れの井戸', group: '農地と井戸', description: '干上がった井戸がある。\n周囲には雑草が生い茂っている。', inspectText: '井戸の中には骨が詰まっている。どれも頭蓋骨と脊椎が抜き取られている。\nこれはすべて... 腕や脚の骨だろうか？', phase2: { beforeText: 'この井戸の中には、腕や脚の骨が入っている。', inspectText: '井戸に捨てられた腕や脚の骨はすべて歪んでおらず、\n一般的な子どもの腕や脚の骨だけが見つかっている。\nいったいこれは何を暗示しているのだろうか？' }, evidence: ['誰かの骨を入手した。'] },
+  graveyard: { name: '墓地', category: '村から離れた静かな場所', group: '人里離れた場所', description: '一部の墓が掘り返されたのか、墓所のあちこちが空になっているようだ。\n掘り返された墓の墓碑には、どれも刻印と思われるものが刻まれている。', inspectText: '彼らには、遺骨に触れると祟られるという考えがなかったのだろうか。それとも、あったのだろうか？\n遺骨からは頭蓋骨と脊椎、腕や脚の骨が失われている。', phase2: { beforeText: '今になってみれば、掘り返された墓の大半の主は子どもの遺骨だと分かる。成人のものとは思えない「小さな骨」が観察される。', inspectText: '確かだ。\n新しい墓ほど、肋骨の近くに\n「人為的に削り取られた痕跡」が多数見つかる。\nもしかすると...この村が崇拝する存在は、ただ想像で作られたものではないだろうか。' }, evidence: ['掘り返された墓と、墓碑に刻まれた刻印を確認した。', '墓の遺骨から頭蓋骨、脊椎、腕や脚の骨が失われている。'] },
+  ashSite: { name: '灰の積もる場所', category: '墓地の近く', group: '人里離れた場所', description: '墓地の近くに灰が積もった場所がある。\n古代の人々は、なぜここで何かを焼いたのだろう...\n一種の火葬場だったのかもしれない。', inspectText: '主に骨が焼かれたようで、白い灰が積もっている。', conditionalText: '積み重なった骨と、ここに転がっている骨に刻まれた印が一致している...', phase2: { beforeText: '骨に刻まれた印...これは何を表しているのだろうか？', inspectText: '調査の結果、「人為的な刻印」と「自然な歪み」に分けられることが分かった。あまり焼けていない一部の骨を発掘すれば明らかになる。発育不全によって生じる骨の自然な歪みを人為的に模倣した...不気味な造形物だ。' }, evidence: ['骨が焼かれたと思われる白い灰が積もっている。'] },
   forest: { name: '森', category: '村外れの森', group: '森と崖', description: '石に刻まれた立入禁止の印が目につく。', inspectText: '森へ入る道の入口に、古い立入禁止の印が刻まれている。森の奥へ続く道は、今も残っている。', evidence: ['森への立ち入りを禁じる古い印。'] },
-  cliff: { name: '森の崖', category: '森の奥にある崖', group: '森と崖', description: '頭蓋骨と脊椎だけが残された、人間の遺骸と思われるものが置かれている。', inspectText: '頭蓋骨と脊椎を中心とした形状だ。骨の周囲には翼のような構造と、何本にも枝分かれした細い痕跡が残っている。\n\n一般的な人間の遺骨とは考えにくい。', evidence: ['人間の遺骨に似ているが、通常の解剖学的構造とは異なる形状。'] }
+  cliff: { name: '森の崖', category: '森の奥にある崖', group: '森と崖', description: '頭蓋骨と脊椎だけが残された、人間の遺骸と思われるものが置かれている。', inspectText: '頭蓋骨と脊椎を中心とした形状だ。骨の周囲には翼のような構造と、何本にも枝分かれした細い痕跡が残っている。\n\n一般的な人間の遺骨とは考えにくい。', evidence: ['人間の遺骨に似ているが、通常の解剖学的構造とは異なる形状。'] },
+  unknown: { name: '???', category: '未知の場所', group: '???' }
 };
 
 const JA_ITEMS = {
@@ -154,8 +183,10 @@ const JA_ITEMS = {
 
 const JA_GROUPS = {
   '마을 중심부': '村の中心部',
-  '경작지와 우물': '農地と井戸',
-  '외진 장소': '人里離れた場所',
+  '우물과 과수원': '井戸と果樹園',
+  '신전': '神殿',
+  '외진 묘역': '人里離れた墓域',
+  '마을 외곽과 숲': '村外れと森',
   '숲과 절벽': '森と崖',
   '마을 바깥': '村の外れ'
 };
@@ -167,6 +198,11 @@ export function t(key, language = DEFAULT_LANGUAGE) {
 export function locationText(id, field, language = DEFAULT_LANGUAGE) {
   if (language === 'ko') return LOCATIONS[id]?.[field] ?? '';
   return JA_LOCATIONS[id]?.[field] ?? LOCATIONS[id]?.[field] ?? '';
+}
+
+export function phase2Text(id, field, language = DEFAULT_LANGUAGE) {
+  if (language === 'ko') return LOCATIONS[id]?.phase2?.[field] ?? '';
+  return JA_LOCATIONS[id]?.phase2?.[field] ?? LOCATIONS[id]?.phase2?.[field] ?? '';
 }
 
 export function itemText(id, field, language = DEFAULT_LANGUAGE) {
@@ -199,12 +235,15 @@ export function setStaticLanguage(language) {
   document.querySelectorAll('[data-i18n-aria]').forEach(element => {
     element.setAttribute('aria-label', t(element.dataset.i18nAria, language));
   });
-  const title = document.getElementById('siteTitle');
-  if (title) {
-    title.innerHTML = language === 'ko'
-      ? '천사맥 <span>天使脈</span>'
-      : '天使脈 <span>천사맥</span>';
+  const titleHtml = language === 'ko'
+    ? '천사맥 <span>天使脈</span>'
+    : '天使脈 <span>천사맥</span>';
+  for (const id of ['siteTitle', 'introTitle']) {
+    const title = document.getElementById(id);
+    if (title) title.innerHTML = titleHtml;
   }
-  const switcher = document.getElementById('languageBtn');
-  if (switcher) switcher.textContent = t('switchLanguage', language);
+  for (const id of ['languageBtn', 'introLanguageBtn']) {
+    const switcher = document.getElementById(id);
+    if (switcher) switcher.textContent = t('switchLanguage', language);
+  }
 }

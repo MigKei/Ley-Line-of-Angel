@@ -1,9 +1,10 @@
-import { LOCATIONS } from '../data/locations.js';
+import { LOCATIONS, PHASE2_LOCATIONS } from '../data/locations.js';
 import { ITEMS } from '../data/items.js';
 import { addJournal } from '../core/journal.js';
 import { hasItem, isLocationInspected, isItemInspected } from '../core/gameState.js';
-import { canTriggerEnding } from './ending.js';
-import { bilingual, itemText, locationText } from '../core/i18n.js';
+import { refreshEndingUnlock } from './ending.js';
+import { bilingual, itemText, locationText, phase2Text } from '../core/i18n.js';
+import { isSecondPhaseUnlocked } from './research.js';
 
 function recordConditionalFindings(state) {
   if (isLocationInspected(state, 'orchard') && isItemInspected(state, 'seed')
@@ -23,28 +24,40 @@ function recordConditionalFindings(state) {
   }
 }
 
+function unlockMessage(state, fallbackMessage) {
+  return refreshEndingUnlock(state) ? 'endingReady' : fallbackMessage;
+}
+
 export function inspectLocation(state, locationId) {
   const place = LOCATIONS[locationId];
-  if (state.ended || !place || state.current !== locationId) {
+  if (!place || state.ended || state.current !== locationId) {
     return { changed: false, message: '' };
   }
 
-  if (locationId === 'cliff' && canTriggerEnding(state)) {
-    state.ended = true;
-    if (!isLocationInspected(state, 'cliff')) state.inspected.push('cliff');
+  if (locationId === 'unknown') {
+    if (!state.endingUnlocked || !state.endingEntered || state.endingInspected) {
+      return { changed: false, message: 'already' };
+    }
+    state.endingInspected = true;
+    return { changed: true, message: 'endingInspected' };
+  }
+
+  if (state.endingUnlocked) return { changed: false, message: '' };
+
+  // 2차 조사 장소는 1차 완료 후, 두 초기 보고서를 읽고 다시 방문해야 조사할 수 있어요.
+  if (PHASE2_LOCATIONS.includes(locationId) && isLocationInspected(state, locationId)) {
+    if (!isSecondPhaseUnlocked(state)) return { changed: false, message: 'phase2NotUnlocked' };
+    if (!state.phase2Visited.includes(locationId)) return { changed: false, message: 'phase2NeedRevisit' };
+    if (state.inspectedPhase2.includes(locationId)) return { changed: false, message: 'already' };
+    state.inspectedPhase2.push(locationId);
     addJournal(state,
-      bilingual('기록 종료', '記録終了'),
-      bilingual(
-        '유해에서 확인한 문양은 소지하고 있던 은색 씨앗의 문양과 일치한다. 씨앗의 외피가 갈라지고, 내부에서 뻗어 나온 조직이 비강 안쪽으로 파고들었다. 침식은 연부 조직을 지나 두개골 안쪽으로 이어진다.',
-        '遺骸に刻まれた紋様は、所持していた銀色の種子の紋様と一致する。種子の外皮が裂け、内部から伸びた組織が鼻腔の奥へ入り込んだ。侵食は軟部組織を通り、頭蓋の内側へと続いていく。'
-      ));
-    return { changed: true, message: 'ending' };
+      bilingual(place.name + ' · 2차 조사', locationText(locationId, 'name', 'ja') + '・第2段階の調査'),
+      bilingual(phase2Text(locationId, 'inspectText', 'ko'), phase2Text(locationId, 'inspectText', 'ja')));
+    recordConditionalFindings(state);
+    return { changed: true, message: unlockMessage(state, 'phase2') };
   }
 
   if (isLocationInspected(state, locationId)) {
-    if (locationId === 'cliff' && !canTriggerEnding(state)) {
-      return { changed: false, message: 'notReady' };
-    }
     return { changed: false, message: 'already' };
   }
 
@@ -61,7 +74,7 @@ export function inspectLocation(state, locationId) {
       bilingual(place.name, locationText(locationId, 'name', 'ja')),
       bilingual('외곽을 조사했다. ' + place.inspectText, '村外れを調査した。' + locationText(locationId, 'inspectText', 'ja')));
     recordConditionalFindings(state);
-    return { changed: true, message: 'location' };
+    return { changed: true, message: unlockMessage(state, 'location') };
   }
 
   if (locationId === 'well') {
@@ -75,7 +88,7 @@ export function inspectLocation(state, locationId) {
       bilingual(place.name, locationText(locationId, 'name', 'ja')),
       bilingual(place.inspectText + '\n\n누군가의 뼈를 획득했다.', locationText(locationId, 'inspectText', 'ja') + '\n\n誰かの骨を入手した。'));
     recordConditionalFindings(state);
-    return { changed: true, message: 'well' };
+    return { changed: true, message: unlockMessage(state, 'well') };
   }
 
   const bodyKo = [place.inspectText || '', ...(place.evidence || [])].filter(Boolean).join('\n');
@@ -84,11 +97,11 @@ export function inspectLocation(state, locationId) {
     bilingual(place.name, locationText(locationId, 'name', 'ja')),
     bilingual(bodyKo, bodyJa));
   recordConditionalFindings(state);
-  return { changed: true, message: 'journal' };
+  return { changed: true, message: unlockMessage(state, 'journal') };
 }
 
 export function inspectItem(state, itemId) {
-  if (state.ended || !hasItem(state, itemId) || isItemInspected(state, itemId)) {
+  if (state.ended || state.endingUnlocked || !hasItem(state, itemId) || isItemInspected(state, itemId)) {
     return { changed: false, message: '' };
   }
 
@@ -100,5 +113,5 @@ export function inspectItem(state, itemId) {
     bilingual(item.name + ' · 개별 조사', itemText(itemId, 'name', 'ja') + '・個別調査'),
     bilingual(item.after, itemText(itemId, 'after', 'ja')));
   recordConditionalFindings(state);
-  return { changed: true, message: itemId };
+  return { changed: true, message: unlockMessage(state, itemId) };
 }

@@ -1,8 +1,9 @@
-import { LOCATIONS } from '../data/locations.js';
+import { LOCATIONS, REQUIRED_LOCATIONS, PHASE2_LOCATIONS } from '../data/locations.js';
 import { ITEMS } from '../data/items.js';
+import { createInitialState } from '../core/gameState.js';
 
 export const SAVE_FORMAT = 'ley-line-of-angel-save';
-export const SAVE_VERSION = 4;
+export const SAVE_VERSION = 6;
 
 export function buildSavePayload(state) {
   return {
@@ -14,6 +15,9 @@ export function buildSavePayload(state) {
       current: state.current,
       visited: [...state.visited],
       inspected: [...state.inspected],
+      inspectedPhase2: [...state.inspectedPhase2],
+      phase2Visited: [...state.phase2Visited],
+      researchRead: [...state.researchRead],
       inventory: [...state.inventory],
       itemInspected: [...state.itemInspected],
       journal: state.journal.map(entry => ({
@@ -22,6 +26,11 @@ export function buildSavePayload(state) {
         date: entry.date || ''
       })),
       conditionalLogged: [...state.conditionalLogged],
+      researchThresholds: { ...state.researchThresholds },
+      endingUnlocked: Boolean(state.endingUnlocked),
+      endingEntered: Boolean(state.endingEntered),
+      endingInspected: Boolean(state.endingInspected),
+      endingChoice: state.endingChoice || null,
       ended: Boolean(state.ended),
       language: state.language === 'ko' ? 'ko' : 'ja'
     }
@@ -89,7 +98,11 @@ export function normalizeImportedState(payload) {
   }
 
   const visited = normalizeList(source.visited, validLocations, '방문 장소', language);
-  const inspected = normalizeList(source.inspected, validLocations, '조사 장소', language);
+  const inspected = normalizeList(source.inspected, new Set(REQUIRED_LOCATIONS), '1차 조사 장소', language);
+  const inspectedPhase2 = normalizeList(source.inspectedPhase2, new Set(PHASE2_LOCATIONS), '2차 조사 장소', language);
+  const phase2Visited = normalizeList(source.phase2Visited, new Set(PHASE2_LOCATIONS), '2차 조사 재방문 장소', language)
+    .filter(id => inspected.includes(id) && visited.includes(id));
+  const researchRead = normalizeList(source.researchRead, new Set(['ecology_01', 'ecology_02']), '읽은 연구 기록', language);
   const inventory = normalizeList(source.inventory, validItems, '소지품', language);
   const itemInspected = normalizeList(source.itemInspected, validItems, '아이템 조사', language)
     .filter(id => inventory.includes(id));
@@ -113,18 +126,51 @@ export function normalizeImportedState(payload) {
     '조건부 기록',
     language
   );
-  if (!visited.includes(source.current)) visited.push(source.current);
+  const defaults = createInitialState().researchThresholds;
+  const researchThresholds = { ...defaults };
+  if (source.researchThresholds && typeof source.researchThresholds === 'object') {
+    for (const key of Object.keys(defaults)) {
+      const value = Number(source.researchThresholds[key]);
+      if (Number.isFinite(value) && value >= 1 && value <= 100) researchThresholds[key] = value;
+    }
+  }
+
+  const allLocationsInspected = REQUIRED_LOCATIONS.every(id => inspected.includes(id));
+  const allPhase2Inspected = PHASE2_LOCATIONS.every(id => inspectedPhase2.includes(id));
+  const allItemsInspected = Object.keys(ITEMS).every(id => inventory.includes(id) && itemInspected.includes(id));
+  const legacyEnded = Boolean(source.ended);
+  // 구 버전의 미진행 엔딩 해금은 새 2차 조사 조건을 충족하기 전까지 보류해요.
+  const endingUnlocked = legacyEnded || source.current === 'unknown'
+    || (allLocationsInspected && allPhase2Inspected && allItemsInspected);
+  let endingEntered = Boolean(source.endingEntered) || source.current === 'unknown' || legacyEnded;
+  const endingInspected = Boolean(source.endingInspected) || legacyEnded;
+  let endingChoice = source.endingChoice === 'remove' || source.endingChoice === 'accept'
+    ? source.endingChoice
+    : (legacyEnded ? 'accept' : null);
+  let current = source.current;
+  // 이전 버전의 절벽 직결 엔딩 저장은 새 결말 화면으로 옮겨 호환해요.
+  if (legacyEnded && current !== 'unknown') current = 'unknown';
+  if (current === 'unknown') endingEntered = true;
+  if (!visited.includes(current)) visited.push(current);
 
   return {
-    current: source.current,
+    current,
     visited,
     inspected,
+    inspectedPhase2,
+    phase2Visited,
+    researchRead,
     inventory,
     itemInspected,
     journal,
     conditionalLogged,
-    ended: Boolean(source.ended),
-    view: 'field',
+    researchThresholds,
+    endingUnlocked,
+    endingEntered,
+    endingInspected,
+    endingChoice,
+    ended: legacyEnded || Boolean(endingChoice),
+    view: endingUnlocked && !endingEntered ? 'map' : 'field',
     language
   };
 }

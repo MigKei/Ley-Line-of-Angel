@@ -8,7 +8,35 @@
   <title>Ley Line of Angel — 天使脈</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="intro-active">
+<section class="intro" id="introScreen" aria-labelledby="introTitle">
+  <div class="intro-card">
+    <div class="intro-top">
+      <div class="eyebrow" data-i18n="eyebrow">ARCHAEOLOGICAL FIELD NOTES · UNKNOWN SETTLEMENT</div>
+      <button class="utility language" id="introLanguageBtn" type="button">한국어</button>
+    </div>
+    <h1 id="introTitle">天使脈 <span>천사맥</span></h1>
+    <p class="subtitle" data-i18n="subtitle">廃墟となった村の現地調査記録</p>
+    <div class="english-title">Ley Line of Angel</div>
+    <div class="header-rule"><span>FIELD / BIOLOGY / HISTORY</span></div>
+    <p class="intro-summary" data-i18n="introSummary">短編の調査型テキストアドベンチャーです。</p>
+    <div class="intro-warning" role="note">
+      <div class="intro-warning-label" data-i18n="introWarningLabel">内容に関する注意</div>
+      <p data-i18n="introWarning">ホラー作品です。</p>
+    </div>
+    <div class="intro-actions">
+      <button class="action" id="introStartBtn" type="button" data-i18n="introStart">はじめる</button>
+      <button class="action secondary" id="introLoadBtn" type="button" data-i18n="introLoad">保存データから再開</button>
+    </div>
+    <p class="current-note intro-save-note" data-i18n="saveNote">進行状況はブラウザに自動保存されません。JSONファイルに保存し、次回プレイ時に読み込んでください。</p>
+    <dl class="intro-credits">
+      <div><dt data-i18n="creditPlanLabel">企画・テキスト</dt><dd>미그 · <a href="mailto:patricia97@naver.com">patricia97@naver.com</a></dd></div>
+      <div><dt data-i18n="creditTranslationLabel">翻訳</dt><dd data-i18n="creditTranslation">機械翻訳およびAI翻訳</dd></div>
+      <div><dt data-i18n="creditCodingLabel">コーディング</dt><dd>GPT &amp; Claude</dd></div>
+    </dl>
+  </div>
+</section>
+
 <div class="shell">
   <header>
     <div class="topline">
@@ -51,10 +79,14 @@
         <section class="panel">
           <div class="panel-head"><span class="panel-label" data-i18n="sectionInvestigation">INVESTIGATION</span><span class="smallcaps" data-i18n="progress">進行状況</span></div>
           <div class="side-section">
-            <div class="progress-meta"><span data-i18n="locationProgress">場所の調査</span><span id="progressText">0 / 13</span></div>
+            <div class="progress-meta"><span data-i18n="locationProgress">第1段階の場所調査</span><span id="progressText">0 / 14</span></div>
             <div class="progress-line"><div class="progress-fill" id="progressFill"></div></div>
+            <div class="progress-meta"><span data-i18n="phase2Progress">第2段階の場所調査</span><span id="phase2ProgressText">0 / 5</span></div>
+            <div class="progress-line"><div class="progress-fill" id="phase2ProgressFill"></div></div>
             <div class="progress-meta"><span data-i18n="itemProgress">アイテムの調査</span><span id="itemProgressText">0 / 2</span></div>
             <div class="progress-line"><div class="progress-fill" id="itemProgressFill"></div></div>
+            <div class="progress-meta"><span data-i18n="overallProgress">総合調査率</span><span id="totalProgressText">0 / 21 · 0%</span></div>
+            <div class="progress-line"><div class="progress-fill" id="totalProgressFill"></div></div>
             <div class="progress-meta"><span data-i18n="seedStatus">銀色の種子</span><span id="seedStatus">未確認</span></div>
             <p class="current-note" id="progressNote">村と周辺に残された痕跡を調査してください。</p>
           </div>

@@ -1,10 +1,13 @@
 import { game, resetState, replaceState } from './core/gameState.js';
 import { travel } from './systems/navigation.js';
 import { inspectItem, inspectLocation } from './systems/investigation.js';
+import { chooseEnding } from './systems/ending.js';
 import { downloadSave, readSaveFile } from './systems/saveManager.js';
 import { renderAll, setView } from './ui/render.js';
-import { showToast } from './ui/dom.js';
-import { t, itemText } from './core/i18n.js';
+import { showToast, leaveIntro } from './ui/dom.js';
+import { t } from './core/i18n.js';
+import { locationToast, itemToast } from './ui/toasts.js';
+import { markResearchRead, isSecondPhaseUnlocked } from './systems/research.js';
 
 const loadFileInput = document.getElementById('loadFileInput');
 
@@ -13,25 +16,24 @@ function updateSaveStatus(message) {
 }
 
 function handleTravel(destinationId) {
-  if (travel(game.state, destinationId)) renderAll(game.state);
+  if (travel(game.state, destinationId)) setView(game.state, game.state.view || 'field');
 }
 
 function handleLocationInspection() {
   const result = inspectLocation(game.state, game.state.current);
   renderAll(game.state);
-  if (result.message === 'ending') showToast(t('toastEnding', game.state.language));
-  else if (result.message === 'well') showToast(t('toastWell', game.state.language));
-  else if (result.message === 'location') showToast(t('toastLocation', game.state.language));
-  else if (result.message === 'journal') showToast(t('toastJournal', game.state.language));
-  else if (result.message === 'already') showToast(t('toastAlready', game.state.language));
-  else if (result.message === 'notReady') showToast(t('toastNotReady', game.state.language));
+  if (result.message === 'endingReady') setView(game.state, 'map');
+  const message = locationToast(result.message, game.state.language);
+  if (message) showToast(message);
 }
 
 function handleItemInspection(itemId) {
   const result = inspectItem(game.state, itemId);
   if (!result.changed) return;
   renderAll(game.state);
-  if (result.message) showToast(`${itemText(result.message, 'name', game.state.language)}${game.state.language === 'ja' ? 'の詳細を記録しました。' : '의 세부 사항을 기록했어요.'}`);
+  if (result.message === 'endingReady') setView(game.state, 'map');
+  const message = itemToast(result.message, game.state.language);
+  if (message) showToast(message);
 }
 
 async function handleSaveImport(file) {
@@ -41,8 +43,9 @@ async function handleSaveImport(file) {
     const accepted = window.confirm(t('confirmImport', game.state.language));
     if (!accepted) return;
     replaceState(importedState);
-    updateSaveStatus(game.state.language === 'ja' ? `読み込んだファイル：${file.name}` : `불러온 파일: ${file.name}`);
-    setView(game.state, 'field');
+    updateSaveStatus(`${t('loadedFile', game.state.language)}${file.name}`);
+    leaveIntro();
+    setView(game.state, game.state.view || 'field');
     showToast(t('loadSuccess', game.state.language));
   } catch (error) {
     console.error(error);
@@ -58,7 +61,15 @@ document.addEventListener('click', event => {
     setView(game.state, button.dataset.view);
     return;
   }
-  if (button.id === 'languageBtn') {
+  if (button.id === 'introStartBtn') {
+    leaveIntro();
+    return;
+  }
+  if (button.id === 'introLoadBtn') {
+    loadFileInput.click();
+    return;
+  }
+  if (button.id === 'languageBtn' || button.id === 'introLanguageBtn') {
     game.state.language = game.state.language === 'ja' ? 'ko' : 'ja';
     renderAll(game.state);
     return;
@@ -92,6 +103,20 @@ document.addEventListener('click', event => {
     handleLocationInspection();
     return;
   }
+  if (button.dataset.readResearch) {
+    const wasUnlocked = isSecondPhaseUnlocked(game.state);
+    if (markResearchRead(game.state, button.dataset.readResearch)) {
+      renderAll(game.state);
+      if (!wasUnlocked && isSecondPhaseUnlocked(game.state)) {
+        showToast(t('toastPhase2Unlocked', game.state.language));
+      }
+    }
+    return;
+  }
+  if (button.dataset.endingChoice) {
+    if (chooseEnding(game.state, button.dataset.endingChoice)) renderAll(game.state);
+    return;
+  }
 
   const destinationId = button.dataset.go || button.dataset.node || button.dataset.mapGo;
   if (destinationId) {
@@ -108,4 +133,4 @@ loadFileInput.addEventListener('change', async event => {
 });
 
 renderAll(game.state);
-setView(game.state, 'field');
+setView(game.state, game.state.view || 'field');
