@@ -1,0 +1,10 @@
+{
+  "name": "ley-line-of-angel",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "천사맥 브라우저 게임 프로토타입",
+  "scripts": {
+    "test": "node --test"
+  }
+}

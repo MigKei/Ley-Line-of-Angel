@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e9e5d9">
+  <meta name="description" content="Ley Line of Angel — an archaeological exploration field record">
+  <title>Ley Line of Angel — 天使脈</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div class="topline">
+      <div class="eyebrow" data-i18n="eyebrow">ARCHAEOLOGICAL FIELD NOTES · UNKNOWN SETTLEMENT</div>
+      <div class="serial" data-i18n="recordNo">RECORD No. 001</div>
+    </div>
+    <h1 id="siteTitle">天使脈 <span>천사맥</span></h1>
+    <p class="subtitle" data-i18n="subtitle">廃墟となった村の現地調査記録</p>
+    <div class="english-title">Ley Line of Angel</div>
+    <div class="header-rule"><span>FIELD / BIOLOGY / HISTORY</span></div>
+  </header>
+
+  <main>
+    <div class="toolbar">
+      <nav class="tabs" aria-label="記録メニュー" data-i18n-aria="menuLabel">
+        <button class="tab active" data-view="field" data-i18n="tabField">現地</button>
+        <button class="tab" data-view="map" data-i18n="tabMap">地図</button>
+        <button class="tab" data-view="inventory" data-i18n="tabInventory">所持品</button>
+        <button class="tab" data-view="journal" data-i18n="tabJournal">調査記録</button>
+        <button class="tab" data-view="research" data-i18n="tabResearch">生態記録</button>
+      </nav>
+      <div class="utility-group">
+        <button class="utility language" id="languageBtn" type="button">한국어</button>
+        <button class="utility" id="saveBtn" type="button" data-i18n="save">JSON保存</button>
+        <button class="utility" id="loadBtn" type="button" data-i18n="load">JSON読込</button>
+        <input id="loadFileInput" type="file" accept=".json,application/json,text/json" hidden>
+        <button class="utility danger" id="resetBtn" type="button" data-i18n="reset">最初から</button>
+      </div>
+    </div>
+
+    <section class="layout" id="fieldView">
+      <article class="panel main-panel">
+        <div class="panel-head">
+          <span class="panel-label" data-i18n="sectionCurrent">CURRENT LOCATION / 現地</span>
+          <span class="status" id="locationStatus">未訪問</span>
+        </div>
+        <div class="location-content" id="locationContent"></div>
+      </article>
+      <aside class="side">
+        <section class="panel">
+          <div class="panel-head"><span class="panel-label" data-i18n="sectionInvestigation">INVESTIGATION</span><span class="smallcaps" data-i18n="progress">進行状況</span></div>
+          <div class="side-section">
+            <div class="progress-meta"><span data-i18n="locationProgress">場所の調査</span><span id="progressText">0 / 13</span></div>
+            <div class="progress-line"><div class="progress-fill" id="progressFill"></div></div>
+            <div class="progress-meta"><span data-i18n="itemProgress">アイテムの調査</span><span id="itemProgressText">0 / 2</span></div>
+            <div class="progress-line"><div class="progress-fill" id="itemProgressFill"></div></div>
+            <div class="progress-meta"><span data-i18n="seedStatus">銀色の種子</span><span id="seedStatus">未確認</span></div>
+            <p class="current-note" id="progressNote">村と周辺に残された痕跡を調査してください。</p>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><span class="panel-label" data-i18n="sectionPocket">POCKET</span><span class="smallcaps" data-i18n="items">ITEMS</span></div>
+          <div class="side-section" id="quickInventory"><div class="empty-state">所持品はありません。</div></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><span class="panel-label" data-i18n="sectionField">FIELD NOTE</span><span class="smallcaps" data-i18n="lastEntry">最新の記録</span></div>
+          <div class="side-section"><p class="current-note" id="lastEntry">まだ記録はありません。</p></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><span class="panel-label" data-i18n="sectionSave">SAVE FILE</span><span class="smallcaps">JSON</span></div>
+          <div class="side-section">
+            <p class="current-note" data-i18n="saveNote">進行状況はブラウザに自動保存されません。JSONファイルに保存し、次回プレイ時に読み込んでください。</p>
+            <div class="status-line" id="saveStatus">記録はまだファイルに保存されていません。</div>
+          </div>
+        </section>
+      </aside>
+    </section>
+
+    <section class="panel map-view" id="mapView">
+      <div class="panel-head"><span class="panel-label" data-i18n="mapPanel">SITE MAP / 調査区域</span><span class="smallcaps">SCHEMATIC · FIELD PLAN</span></div>
+      <div class="location-content">
+        <h2 class="view-heading" data-i18n="mapHeading">調査区域</h2>
+        <div class="view-sub" data-i18n="mapDescription">調査区域の全体図です。現在地と道でつながっている場所へ移動できます。</div>
+        <div class="map-groups" id="mapGroups"></div>
+        <div class="movement">
+          <div class="movement-head"><span class="movement-title" data-i18n="currentRoute">現在地から移動</span><span class="smallcaps" id="mapCurrent"></span></div>
+          <div class="move-grid" id="mapMoves"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel inventory-view" id="inventoryView">
+      <div class="panel-head"><span class="panel-label" data-i18n="inventoryPanel">INVENTORY / 所持品</span><span class="smallcaps">COLLECTED OBJECTS</span></div>
+      <div class="location-content">
+        <h2 class="view-heading" data-i18n="inventoryHeading">所持品</h2>
+        <div class="view-sub" data-i18n="inventoryDescription">入手した物を選んで個別に調査できます。調査前後で記録が変化することがあります。</div>
+        <div class="list-stack" id="inventoryList"></div>
+      </div>
+    </section>
+
+    <section class="panel journal-view" id="journalView">
+      <div class="panel-head"><span class="panel-label" data-i18n="journalPanel">FIELD JOURNAL / 調査記録</span><span class="smallcaps">OBSERVATIONS</span></div>
+      <div class="location-content">
+        <h2 class="view-heading" data-i18n="journalHeading">調査記録</h2>
+        <div class="view-sub" data-i18n="journalDescription">場所やアイテムで確認した内容が、時系列で記録されます。</div>
+        <div class="list-stack" id="journalList"></div>
+      </div>
+    </section>
+
+    <section class="panel research-view" id="researchView">
+      <div class="panel-head"><span class="panel-label" data-i18n="researchPanel">BIOLOGICAL NOTES / 生態調査</span><span class="smallcaps">PROGRESSIVE RECORDS</span></div>
+      <div class="location-content">
+        <h2 class="view-heading" data-i18n="researchHeading">生態調査記録</h2>
+        <div class="view-sub" data-i18n="researchDescription">調査した場所とアイテムの進行率に応じて、整理された研究記録が開示されます。</div>
+        <div class="research-progress" id="researchProgress"></div>
+        <div class="research-list" id="researchList"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>天使脈 · LEY LINE OF ANGEL</span>
+    <span data-i18n="footer">進行状況はJSONファイルに保存・読み込みできます。</span>
+  </footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
